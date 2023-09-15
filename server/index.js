@@ -30,7 +30,7 @@ const io = new Server(server, {
 });
 
 //TODO: Create this file in the server directory of the project
-process.env.GOOGLE_APPLICATION_CREDENTIALS = "./speech-to-text-key.json";
+process.env.GOOGLE_APPLICATION_CREDENTIALS = "credentials.json";
 
 const speechClient = new speech.SpeechClient();
 
@@ -141,7 +141,7 @@ const request = {
     enableSpeakerDiarization: true,
     //diarizationSpeakerCount: 2,
     //model: "video",
-    model: "command_and_search",
+    model: "medical_dictation",
     //model: "default",
     useEnhanced: true,
   },

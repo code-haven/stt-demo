@@ -3,7 +3,7 @@ import { default as React, useEffect, useState, useRef } from "react";
 import { Button } from "react-bootstrap";
 import Container from "react-bootstrap/Container";
 import * as io from "socket.io-client";
-
+import Form from 'react-bootstrap/Form';
 const sampleRate = 16000;
 
 const getMediaStream = () =>
@@ -35,7 +35,7 @@ const AudioToText: React.FC = () => {
   const speechRecognized = (data: WordRecognized) => {
     if (data.isFinal) {
       setCurrentRecognition("...");
-      setRecognitionHistory((old) => [data.text, ...old]);
+      setRecognitionHistory((old) => [...old, data.text]);
     } else setCurrentRecognition(data.text + "...");
   };
 
@@ -133,8 +133,8 @@ const AudioToText: React.FC = () => {
 
   return (
     <React.Fragment>
-      <Container className="py-5 text-center">
-        <Container fluid className="py-5 bg-primary text-light text-center ">
+      <Container className="py-3 text-center">
+        <Container fluid className="py-3 text-light text-center ">
           <Container>
             <Button
               className={isRecording ? "btn-danger" : "btn-outline-light"}
@@ -153,10 +153,21 @@ const AudioToText: React.FC = () => {
           </Container>
         </Container>
         <Container className="py-5 text-center">
-          {recognitionHistory.map((tx, idx) => (
+          {/* {recognitionHistory.map((tx, idx) => (
             <p key={idx}>{tx}</p>
-          ))}
-          <p>{currentRecognition}</p>
+          ))} */}
+          <Form>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+              <Form.Label>Full transcription</Form.Label>
+              <Form.Control as="textarea" rows={3} defaultValue={recognitionHistory.map((tx, idx) => (
+            tx
+          )).join(' ')}/>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+        <Form.Label>Current transcription</Form.Label>
+        <p>{currentRecognition}</p>
+      </Form.Group>
+            </Form>
         </Container>
       </Container>
     </React.Fragment>
