@@ -7,7 +7,6 @@ function App() {
     <Container className="py-5 text-center">
       <h3>Google Speech-to-text demo</h3>
       <p>It processes medical terminology and recognizes punctuation and commands within square brackets. <a href="https://cloud.google.com/speech-to-text/v2/docs/medical-models">docs</a></p>
-      <p>Note: We have not implemented the actions yet.</p>
       <AudioToText />
     </Container>
   );

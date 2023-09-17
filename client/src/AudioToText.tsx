@@ -4,6 +4,7 @@ import { Button } from "react-bootstrap";
 import Container from "react-bootstrap/Container";
 import * as io from "socket.io-client";
 import Form from 'react-bootstrap/Form';
+
 const sampleRate = 16000;
 
 const getMediaStream = () =>
@@ -24,7 +25,7 @@ interface WordRecognized {
 
 const AudioToText: React.FC = () => {
   const [connection, setConnection] = useState<io.Socket>();
-  const [currentRecognition, setCurrentRecognition] = useState<string>();
+  const [currentRecognition, setCurrentRecognition] = useState<string>("...");
   const [recognitionHistory, setRecognitionHistory] = useState<string[]>([]);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [recorder, setRecorder] = useState<any>();
@@ -32,10 +33,31 @@ const AudioToText: React.FC = () => {
   const audioContextRef = useRef<any>();
   const audioInputRef = useRef<any>();
 
+  const postProcess = (data: string) => {
+    
+    let replacements = [
+      // Commands
+      ["[ next line ]", "\r\n"],
+      ["[ new line ]", "\r\n"],
+
+      // Punctuations
+      ["[ comma ]", ","],
+      ["[ period ]", "."],
+      ["[ colon ]", ":"],
+      ["[ quote ]", "\""],
+      ["[ unquote ]", "\""],
+    ]
+    for (const replacement of replacements) { 
+      data = data.replaceAll(replacement[0], replacement[1])
+    }
+    console.log("post-process", data)
+    return data
+  }
+
   const speechRecognized = (data: WordRecognized) => {
     if (data.isFinal) {
       setCurrentRecognition("...");
-      setRecognitionHistory((old) => [...old, data.text]);
+      setRecognitionHistory((old) => [...old, postProcess(data.text)]);
     } else setCurrentRecognition(data.text + "...");
   };
 
@@ -153,15 +175,12 @@ const AudioToText: React.FC = () => {
           </Container>
         </Container>
         <Container className="py-5 text-center">
-          {/* {recognitionHistory.map((tx, idx) => (
-            <p key={idx}>{tx}</p>
-          ))} */}
+
           <Form>
             <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-              <Form.Label>Full transcription</Form.Label>
-              <Form.Control as="textarea" rows={3} defaultValue={recognitionHistory.map((tx, idx) => (
+              <Form.Control as="textarea" rows={5} cols={50} defaultValue={recognitionHistory.map((tx, idx) => (
             tx
-          )).join(' ')}/>
+          )).join('')}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
         <Form.Label>Current transcription</Form.Label>

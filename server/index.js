@@ -1,6 +1,5 @@
 const express = require("express");
 const speech = require("@google-cloud/speech");
-
 //use logger
 const logger = require("morgan");
 
@@ -136,6 +135,7 @@ const request = {
     languageCode: "en-US",
     //alternativeLanguageCodes: alternativeLanguageCodes,
     enableWordTimeOffsets: true,
+    enableAutomaticPunctuation: true,
     enableAutomaticPunctuation: true,
     enableWordConfidence: true,
     enableSpeakerDiarization: true,
